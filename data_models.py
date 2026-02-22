@@ -42,6 +42,3 @@ class Book(db.Model):
         )
 
 
-# Run once to create the tables, then comment out:
-# with app.app_context():
-#     db.create_all()
