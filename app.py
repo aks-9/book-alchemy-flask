@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
-from flask_sqlalchemy import SQLAlchemy
+from flask import (Flask, render_template, request,
+                   redirect, url_for, flash, abort)
 from datetime import datetime
 import os
 
@@ -9,7 +9,8 @@ app = Flask(__name__)
 app.secret_key = 'library-secret-key-change-in-production'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data/library.sqlite')}"
+db_path = os.path.join(basedir, 'data', 'library.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 
 db.init_app(app)
 
@@ -86,7 +87,9 @@ def add_book():
             new_book = Book(
                 title=title,
                 isbn=isbn,
-                publication_year=int(publication_year) if publication_year else None,
+                publication_year=(
+                    int(publication_year) if publication_year else None
+                ),
                 author_id=int(author_id)
             )
             db.session.add(new_book)
@@ -112,7 +115,10 @@ def delete_book(book_id):
     if author_had_one_book:
         db.session.delete(author)
         db.session.commit()
-        flash(f'"{title}" and its author were removed from the library.', 'success')
+        flash(
+            f'"{title}" and its author were removed from the library.',
+            'success'
+        )
     else:
         flash(f'"{title}" was removed from the library.', 'success')
 

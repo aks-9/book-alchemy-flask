@@ -28,7 +28,9 @@ class Book(db.Model):
     isbn = db.Column(db.String(13), nullable=False, unique=True)
     title = db.Column(db.String(200), nullable=False)
     publication_year = db.Column(db.Integer, nullable=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
+    author_id = db.Column(
+        db.Integer, db.ForeignKey('authors.id'), nullable=False
+    )
 
     author = db.relationship('Author', backref=db.backref('books', lazy=True))
 
@@ -40,5 +42,3 @@ class Book(db.Model):
             f"'{self.title}' (ISBN: {self.isbn}, "
             f"Published: {self.publication_year or 'Unknown'})"
         )
-
-
