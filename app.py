@@ -27,23 +27,23 @@ def parse_date(date_str):
 @app.route('/')
 def home():
     sort = request.args.get('sort', 'title')
+    search = request.args.get('q', '').strip()
+
+    query = db.session.query(Book).join(Author)
+
+    if search:
+        pattern = f'%{search}%'
+        query = query.filter(
+            db.or_(Book.title.ilike(pattern), Author.name.ilike(pattern))
+        )
 
     if sort == 'author':
-        books = (
-            db.session.query(Book)
-            .join(Author)
-            .order_by(Author.name.asc(), Book.title.asc())
-            .all()
-        )
+        query = query.order_by(Author.name.asc(), Book.title.asc())
     else:
-        books = (
-            db.session.query(Book)
-            .join(Author)
-            .order_by(Book.title.asc())
-            .all()
-        )
+        query = query.order_by(Book.title.asc())
 
-    return render_template('home.html', books=books, sort=sort)
+    books = query.all()
+    return render_template('home.html', books=books, sort=sort, search=search)
 
 
 @app.route('/add_author', methods=['GET', 'POST'])

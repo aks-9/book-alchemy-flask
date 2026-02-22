@@ -6,13 +6,23 @@
 <p class="page-subtitle">Every book a doorway. Every author a world.</p>
 <hr class="divider" />
 
+<form class="search-bar" method="GET" action="/">
+  <input type="hidden" name="sort" value="{{ sort }}" />
+  <input class="search-input" type="text" name="q" value="{{ search }}"
+         placeholder="Search by title or author…" />
+  <button type="submit" class="btn btn-primary btn-search">Search</button>
+  {% if search %}
+    <a href="{{ url_for('home', sort=sort) }}" class="btn btn-ghost">Clear</a>
+  {% endif %}
+</form>
+
 <div class="sort-bar">
   <span class="sort-label">Sort by:</span>
-  <a href="/?sort=title"
+  <a href="{{ url_for('home', sort='title', q=search) }}"
      class="btn btn-ghost btn-sort {% if sort == 'title' %}active{% endif %}">
     Title
   </a>
-  <a href="/?sort=author"
+  <a href="{{ url_for('home', sort='author', q=search) }}"
      class="btn btn-ghost btn-sort {% if sort == 'author' %}active{% endif %}">
     Author
   </a>
@@ -42,6 +52,11 @@
       </div>
     </div>
     {% endfor %}
+  </div>
+{% elif search %}
+  <div class="empty-state">
+    <p>No books found matching "{{ search }}".</p>
+    <a href="{{ url_for('home', sort=sort) }}" class="btn btn-ghost">Clear search</a>
   </div>
 {% else %}
   <div class="empty-state">
