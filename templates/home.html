@@ -45,11 +45,17 @@
       {% endif %}
       <div class="book-info">
         <div class="book-title">{{ book.title }}</div>
-        <div class="book-author">{{ book.author.name }}</div>
+        <div class="book-author">{{ book.author.name if book.author else 'Unknown Author' }}</div>
         {% if book.publication_year %}
           <div class="book-year">{{ book.publication_year }}</div>
         {% endif %}
       </div>
+      <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}">
+        <button type="submit" class="btn-delete"
+                onclick="return confirm('Remove this book from the library?')">
+          ✕ Remove
+        </button>
+      </form>
     </div>
     {% endfor %}
   </div>

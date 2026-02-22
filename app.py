@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
@@ -29,7 +29,7 @@ def home():
     sort = request.args.get('sort', 'title')
     search = request.args.get('q', '').strip()
 
-    query = db.session.query(Book).join(Author)
+    query = db.session.query(Book).outerjoin(Author)
 
     if search:
         pattern = f'%{search}%'
@@ -94,6 +94,29 @@ def add_book():
             success = f'"{title}" was successfully added to the library!'
 
     return render_template('add_book.html', authors=authors, success=success)
+
+
+@app.route('/book/<int:book_id>/delete', methods=['POST'])
+def delete_book(book_id):
+    book = db.session.get(Book, book_id)
+    if book is None:
+        abort(404)
+
+    author = book.author
+    title = book.title
+    author_had_one_book = len(author.books) == 1
+
+    db.session.delete(book)
+    db.session.commit()
+
+    if author_had_one_book:
+        db.session.delete(author)
+        db.session.commit()
+        flash(f'"{title}" and its author were removed from the library.', 'success')
+    else:
+        flash(f'"{title}" was removed from the library.', 'success')
+
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
