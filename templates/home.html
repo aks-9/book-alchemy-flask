@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Browse the Library{% endblock %}
+
+{% block content %}
+<h1 class="page-title">The <span>Collection</span></h1>
+<p class="page-subtitle">Every book a doorway. Every author a world.</p>
+<hr class="divider" />
+
+<div class="sort-bar">
+  <span class="sort-label">Sort by:</span>
+  <a href="/?sort=title"
+     class="btn btn-ghost btn-sort {% if sort == 'title' %}active{% endif %}">
+    Title
+  </a>
+  <a href="/?sort=author"
+     class="btn btn-ghost btn-sort {% if sort == 'author' %}active{% endif %}">
+    Author
+  </a>
+</div>
+
+{% if books %}
+  <div class="book-grid">
+    {% for book in books %}
+    <div class="book-card">
+      {% if book.isbn %}
+        <img
+          class="book-cover"
+          src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg"
+          alt="{{ book.title }} cover"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="book-cover-placeholder" style="display:none;">📖</div>
+      {% else %}
+        <div class="book-cover-placeholder">📖</div>
+      {% endif %}
+      <div class="book-info">
+        <div class="book-title">{{ book.title }}</div>
+        <div class="book-author">{{ book.author.name }}</div>
+        {% if book.publication_year %}
+          <div class="book-year">{{ book.publication_year }}</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <p>The shelves are bare — no books yet.</p>
+    <a href="/add_author" class="btn btn-primary">Add an Author first</a>
+  </div>
+{% endif %}
+{% endblock %}

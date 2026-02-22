@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Add a Book{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Add a <span>Book</span></h1>
+<p class="page-subtitle">Shelve a new title in the collection.</p>
+<hr class="divider" />
+
+{% if success %}
+  <div class="alert alert-success">✓ {{ success }}</div>
+{% endif %}
+
+{% if not authors %}
+  <div class="alert alert-error">
+    No authors found. Please <a href="/add_author" style="color:var(--rust); font-weight:700;">add an author</a> before adding a book.
+  </div>
+{% else %}
+<div class="form-card">
+  <form method="POST" action="/add_book">
+    <div class="form-group">
+      <label for="title">Title <span style="color:var(--rust)">*</span></label>
+      <input type="text" id="title" name="title" placeholder="e.g. One Hundred Years of Solitude" required />
+    </div>
+
+    <div class="form-group">
+      <label for="isbn">ISBN <span style="color:var(--rust)">*</span></label>
+      <input type="text" id="isbn" name="isbn" placeholder="e.g. 9780060883287" required maxlength="13" />
+      <p class="hint">13-digit ISBN — used to fetch the cover image.</p>
+    </div>
+
+    <div class="form-group">
+      <label for="publication_year">Publication Year</label>
+      <input type="number" id="publication_year" name="publication_year"
+             placeholder="e.g. 1967" min="1000" max="2100" />
+    </div>
+
+    <div class="form-group">
+      <label for="author_id">Author <span style="color:var(--rust)">*</span></label>
+      <div class="select-wrap">
+        <select id="author_id" name="author_id" required>
+          <option value="" disabled selected>Select an author…</option>
+          {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:1rem; margin-top:2rem;">
+      <button type="submit" class="btn btn-primary">Add Book</button>
+      <a href="/" class="btn btn-ghost">Back to Library</a>
+    </div>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

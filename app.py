@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import os
 
 from data_models import db, Author, Book
@@ -11,6 +12,16 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data/library.sqlite')}"
 
 db.init_app(app)
+
+
+def parse_date(date_str):
+    """Convert 'YYYY-MM-DD' string to a date object, or return None."""
+    if not date_str:
+        return None
+    try:
+        return datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return None
 
 
 @app.route('/')
@@ -40,8 +51,8 @@ def add_author():
     success = None
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
-        birth_date = request.form.get('birth_date') or None
-        date_of_death = request.form.get('date_of_death') or None
+        birth_date = parse_date(request.form.get('birth_date'))
+        date_of_death = parse_date(request.form.get('date_of_death'))
 
         if not name:
             flash('Author name is required.', 'error')
@@ -86,4 +97,7 @@ def add_book():
 
 
 if __name__ == '__main__':
+    os.makedirs(os.path.join(basedir, 'data'), exist_ok=True)
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
