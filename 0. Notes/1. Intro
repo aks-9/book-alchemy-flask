@@ -1,0 +1,5 @@
+In this exercise, we’ll create our own digital library using Flask and flask-sqlalchemy to achieve that!
+
+Flask-SQLAlchemy extends SQLAlchemy by providing additional integration specifically tailored for Flask applications. It simplifies the setup and configuration of SQLAlchemy within a Flask app, reducing the amount of boilerplate code required to get started.
+
+With flask-sqlalchemy, you can define your database models as Python classes, leveraging SQLAlchemy's ORM capabilities to easily map these classes to database tables.

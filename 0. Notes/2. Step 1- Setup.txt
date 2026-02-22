@@ -1,0 +1,21 @@
+You will probably need to reference the flask-sqlalchemy documentation (https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/)
+
+
+ and/or the SQLAlchemy (https://docs.sqlalchemy.org/) documentation while you complete this exercise.
+
+
+Python libraries
+Install the flask, sqlalchemy, flask_sqlalchemy, and jinja2 libraries into your environment.
+
+Create a SQLite file
+Create a new SQLite file called library.sqlite within the existing /data directory.
+
+Initialize the Flask app
+Create a file called app.py in the project’s root directory (at the same level as the data/ and templates/ directories).
+
+Import these packages at the top of app.py:
+
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+Create an instance of the Flask application after the imports.
